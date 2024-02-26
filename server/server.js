@@ -5,8 +5,7 @@ import express from 'express'
 import http from 'http'
 import cors from 'cors'
 import bodyParser from 'body-parser'
-
-import { typeDefs, resolvers } from './src/schema.js'
+import { typeDefs, resolvers } from './src/peopleCarsScheme.js'
 
 const startApolloServer = async (typeDefs, resolvers) => {
   const app = express()
@@ -29,14 +28,6 @@ const startApolloServer = async (typeDefs, resolvers) => {
       context: async ({ req }) => ({ token: req.headers.token })
     })
   )
-
-  // if it was rest we would have
-
-  // GET /contacts
-  // GET /contacts/1
-  // POST /contacts
-  // PATCH /contacts/1
-  // DELETE /contacts/1
 
   await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve))
 

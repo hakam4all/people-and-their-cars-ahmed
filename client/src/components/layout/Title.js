@@ -1,8 +1,9 @@
 const Title = () => {
   const styles = getStyles()
 
-  return <h1 style={styles.title}>It's all about who you know!</h1>
+  return <h1 style={styles.title}>PEOPLE AND THEIR CARS</h1>
 }
+
 
 const getStyles = () => ({
   title: {

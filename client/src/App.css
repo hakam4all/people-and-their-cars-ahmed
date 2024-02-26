@@ -5,7 +5,8 @@
   flex-direction: column;
   margin: 100px auto;
   padding: 40px;
-  width: 70%;
+  width: 80%;
+  max-width: 1200px;
 }
 
 .App-logo {
