@@ -6,11 +6,11 @@ import filter from 'lodash.filter'
 const RemovePerson = ({ id }) => {
   const [removePerson] = useMutation(REMOVE_PERSON, {
     update(cache, { data: { removePerson } }) {
-      const { persons } = cache.readQuery({ query: GET_PERSONS })
+      const { getPerson } = cache.readQuery({ query: GET_PERSONS })
       cache.writeQuery({
         query: GET_PERSONS,
         data: {
-          persons: filter(persons, c => {
+          getPerson: filter(getPerson, c => {
             return c.id !== removePerson.id
           })
         }

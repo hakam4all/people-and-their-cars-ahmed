@@ -1,8 +1,10 @@
 import { gql } from '@apollo/client'
 
+// changed persons to getPerson
+
 export const GET_PERSONS = gql`
   {
-    persons {
+    getPerson {
       id
       firstName
       lastName
@@ -11,7 +13,7 @@ export const GET_PERSONS = gql`
 `
 
 export const ADD_PERSON = gql`
-  mutation AddPersons($id: String!, $firstName: String!, $lastName: String!) {
+  mutation AddPerson($id: String!, $firstName: String!, $lastName: String!) {
     addPerson(id: $id, firstName: $firstName, lastName: $lastName) {
       id
       firstName
@@ -44,9 +46,11 @@ export const UPDATE_PERSON = gql`
 
 //Cars module
 
+// GET_CARS: Changed cars to getCar 
+
 export const GET_CARS = gql`
   {
-    cars {
+    getCar {
       id
       year
       make
@@ -55,6 +59,19 @@ export const GET_CARS = gql`
       personId
     }
   }
+`
+
+export const GET_PERSON_CARS = gql`
+query personCars($personId: String!){
+  personCars(personId: $personId){
+      id
+      year
+      make
+      model
+      price
+      personId
+  }
+}
 `
 
 export const ADD_CAR = gql`
@@ -77,16 +94,21 @@ export const REMOVE_CAR = gql`
       id
       year
       make
+      model
+      price
+      personId
     }
   }
 `
 
 export const UPDATE_CAR = gql`
-  mutation UpdateCar($id: String!, $year: Int!, $make: String!) {
-    updateCar(id: $id, year: $year, make: $make) {
+  mutation UpdateCar($id: String!, $year: Int!, $make: String!, $model: String!, $price: Float!) {
+    updateCar(id: $id, year: $year, make: $make, model: $model, price: $price) {
       id
       year
       make
-    }
+      model
+      price
   }
-`
+}`
+

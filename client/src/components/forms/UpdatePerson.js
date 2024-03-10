@@ -1,16 +1,13 @@
-// File Name (UpdateContact.js : UpdatePerson.js)
-
 import { useEffect, useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import { useMutation } from '@apollo/client'
-import { UPDATE_PERSON } from '../../graphql/queries'  //done
+import { UPDATE_PERSON } from '../../graphql/queries'
 
 const UpdatePerson = props => {
   const { id, firstName, lastName } = props
   const [form] = Form.useForm()
   const [, forceUpdate] = useState()
-
-  const [UpdatePerson] = useMutation(UPDATE_PERSON)  //done
+  const [UpdatePerson] = useMutation(UPDATE_PERSON)
 
   const onFinish = values => {
     const { firstName, lastName } = values
@@ -48,21 +45,7 @@ const UpdatePerson = props => {
       <Form.Item name='lastName' rules={[{ required: true, message: 'Please enter a last name' }]}>
         <Input placeholder='i.e. Hardly' />
       </Form.Item>
-      <Form.Item shouldUpdate={true}>
-        {() => (
-          <Button
-            form={form}
-            type='primary'
-            htmlType='submit'
-          // disabled={
-          //   (!form.isFieldTouched('firstName') && !form.isFieldTouched('lastName')) ||
-          //   form.getFieldsError().filter(({ errors }) => errors.length).length
-          // }
-          >
-            Update Person
-          </Button>
-        )}
-      </Form.Item>
+      <Button htmlType='submit'>Update</Button>
       <Button onClick={props.onButtonClick}>Cancel</Button>
     </Form>
   )

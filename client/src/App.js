@@ -1,8 +1,8 @@
 import './App.css'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-import Title from './components/layout/Title' //done
-import AddPerson from './components/forms/AddPerson'   //AddContact : AddPerson
-import Persons from './components/lists/Persons'  //Contacts : Persons
+import Title from './components/layout/Title' 
+import AddPerson from './components/forms/AddPerson'  
+import Persons from './components/lists/Persons'  
 import AddCar from './components/forms/AddCar'
 
 const client = new ApolloClient({

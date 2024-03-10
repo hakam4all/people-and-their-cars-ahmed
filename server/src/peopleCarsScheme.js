@@ -2,7 +2,7 @@ import find from 'lodash.find'
 import remove from 'lodash.remove'
 
 
-const people = [
+const peopleArray = [
   {
     id: '1',
     firstName: 'Bill',
@@ -20,7 +20,7 @@ const people = [
   }
 ]
 
-const cars = [
+const carsArray = [
   {
     id: '1',
     year: '2019',
@@ -96,7 +96,6 @@ const cars = [
 ]
 
 
-
 const typeDefs = `
   type Person {
     id: String!
@@ -115,10 +114,9 @@ const typeDefs = `
 
 
   type Query {
-    person(id: String!): Person
-    persons: [Person]
-    car(id: String!): Car
-    cars: [Car]
+    getPerson: [Person]
+    getCar: [Car]
+    personCars(personId: String!): [Car]
   }
 
   type Mutation {
@@ -126,22 +124,18 @@ const typeDefs = `
     updatePerson(id: String!, firstName: String!, lastName: String!): Person
     removePerson(id: String!): Person
     addCar(id: String!, year: Int!, make: String!, model: String!, price: Float!, personId: String!): Car
-    updateCar(id: String!, year: Int!, make: String! , model: String!, price: Float!, personId: String!): Car
+    updateCar(id: String!, year: Int!, make: String! , model: String!, price: Float!): Car
     removeCar(id: String!): Car
   }
 `
 
 
-
 const resolvers = {
   Query: {
-    persons: () => people,
-    person(root, args) {
-      return find(people, { id: args.id })
-    },
-    cars: () => cars,
-    car(root, args) {
-      return find(cars, { id: args.id })
+    getPerson: () => peopleArray,
+    getCar: () => carsArray,
+    personCars: (parent, args) => {
+      return carsArray.filter(getCar => getCar.personId === args.personId);
     }
   },
   Mutation: {
@@ -151,11 +145,11 @@ const resolvers = {
         firstName: args.firstName,
         lastName: args.lastName
       }
-      people.push(newPerson)
+      peopleArray.push(newPerson)
       return newPerson
     },
     updatePerson: (root, args) => {
-      const person = find(people, { id: args.id })
+      const person = find(peopleArray, { id: args.id })
       if (!person) {
         throw new Error(`Couldn't find person with id ${args.id}`)
       }
@@ -164,11 +158,11 @@ const resolvers = {
       return person
     },
     removePerson: (root, args) => {
-      const removePerson = find(people, { id: args.id })
+      const removePerson = find(peopleArray, { id: args.id })
       if (!removePerson) {
         throw new Error(`Couldn't find person with id ${args.id}`)
       }
-      remove(people, c => {
+      remove(peopleArray, c => {
         return c.id === removePerson.id
       })
       return removePerson
@@ -176,36 +170,34 @@ const resolvers = {
     addCar: (root, args) => {
       const newCar = {
         id: args.id,
-        year: args.year, 
+        year: args.year,
         make: args.make,
         model: args.model,
-        price: args.price, 
+        price: args.price,
         personId: args.personId
       }
-      cars.push(newCar)
+      carsArray.push(newCar)
       return newCar
     }
     ,
     updateCar: (root, args) => {
-      const car = find(cars, { id: args.id });
-      if (!car) {
+      const updateCar = find(carsArray, { id: args.id });
+      if (!updateCar) {
         throw new Error(`Couldn't find car with id ${args.id}`);
       }
-      car.year = args.year;
-      car.make = args.make;
-      car.model = args.model; 
-      car.price = args.price; 
-      car.personId = args.personId; 
-      return car;
+      updateCar.year = args.year;
+      updateCar.make = args.make;
+      updateCar.model = args.model;
+      updateCar.price = args.price;
+      return updateCar;
     },
-  
 
     removeCar: (root, args) => {
-      const removeCar = find(cars, { id: args.id })
+      const removeCar = find(carsArray, { id: args.id })
       if (!removeCar) {
         throw new Error(`Couldn't find car with id ${args.id}`)
       }
-      remove(cars, c => {
+      remove(carsArray, c => {
         return c.id === removeCar.id
       })
       return removeCar

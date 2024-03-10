@@ -1,29 +1,36 @@
 
 import { Button, Form, Input, Select, notification } from 'antd';
 import { useMutation, useQuery } from '@apollo/client';
-import { ADD_CAR, GET_CARS, GET_PERSONS } from '../../graphql/queries';
+import { ADD_CAR, GET_CARS, GET_PERSONS, GET_PERSON_CARS } from '../../graphql/queries';
+import { useEffect, useState } from 'react'
 
 const { Option } = Select;
 
 const AddCar = () => {
   const [form] = Form.useForm();
+  const [, forceUpdate] = useState()
   const { loading: loadingPersons, error: errorPersons, data: dataPersons } = useQuery(GET_PERSONS);
   const { loading: loadingCars, error: errorCars, data: dataCars } = useQuery(GET_CARS);
 
   const [addCar] = useMutation(ADD_CAR, {
     update(cache, { data: { addCar } }) {
-      const { cars } = cache.readQuery({ query: GET_CARS });
+      const data = cache.readQuery({ query: GET_CARS })
       cache.writeQuery({
         query: GET_CARS,
         data: {
-          cars: [...cars, addCar],
+          ...data,
+          getCar: [...data.getCar, addCar]
         },
-      });
-    },
-  });
+      })
+    }
+  })
+  
+  useEffect(() => {
+    forceUpdate({})
+  }, [])
 
-  const findAvailableId = (cars) => {
-    const existingIds = new Set(cars.map(car => Number(car.id)));
+  const findAvailableId = (getCar) => {
+    const existingIds = new Set(getCar.map(getCar => Number(getCar.id)));
     for (let id = 1; id <= 100; id++) {
       if (!existingIds.has(id)) {
         return id;
@@ -32,36 +39,31 @@ const AddCar = () => {
     throw new Error('No available ID found');
   };
 
-  const onFinish = async (values) => {
-    try {
-      const { year, make, model, price, personId } = values;
-      const id = findAvailableId(dataCars.cars);
+  const onFinish = values => {
 
-      await addCar({
-        variables: {
-          id: String(id),
-          year: parseInt(year, 10),
-          make,
-          model,
-          price: parseFloat(price),
-          personId,
-        },
-      });
+    const { year, make, model, price, personId } = values;
+    const id = findAvailableId(dataCars.getCar);
 
-      notification.success({
-        message: 'Car Added',
-        description: 'The car has been added successfully.',
-      });
+    addCar({
+      variables: {
+        id: String(id),
+        year: parseInt(year, 10),
+        make,
+        model,
+        price: parseFloat(price),
+        personId,
+      },
+      refetchQueries: [{ query: GET_PERSON_CARS, variables: { personId } }]
+    });
 
-      form.resetFields();
-    } catch (error) {
-      notification.error({
-        message: 'Error',
-        description: 'There was an error adding the car.',
-      });
-      console.error('Error adding a car:', error);
-    }
-  };
+    notification.success({
+      message: 'Car Added',
+      description: 'The car has been added successfully.',
+    });
+
+    form.resetFields();
+  }
+
 
   if (loadingPersons || loadingCars) return 'Loading...';
   if (errorPersons || errorCars) {
@@ -126,8 +128,8 @@ const AddCar = () => {
           style={{ marginLeft: '10px', width: '200px', display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}
           rules={[{ required: true, message: 'Please select a person' }]}
         >
-          <Select placeholder='Select a person' style={{ marginLeft: '10px' , width: '100px' }}>
-            {dataPersons?.persons?.map(({ id, firstName, lastName }) => (
+          <Select placeholder='Select a person' style={{ marginLeft: '10px', width: '100px' }}>
+            {dataPersons?.getPerson?.map(({ id, firstName, lastName }) => (
               <Option key={id} value={id}>{`${firstName} ${lastName}`}</Option>
             ))}
           </Select>
@@ -142,7 +144,6 @@ const AddCar = () => {
                 !form.isFieldsTouched(true) ||
                 form.getFieldsError().filter(({ errors }) => errors.length).length
               }
-              onClick={console.log('the button message', addCar)}
             >
               Add Car
             </Button>

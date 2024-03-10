@@ -8,6 +8,7 @@ const AddPerson = () => {
   const [, forceUpdate] = useState()
 
   const { data: personsData } = useQuery(GET_PERSONS)
+
   const [addPerson] = useMutation(ADD_PERSON, {
     update(cache, { data: { addPerson } }) {
       const data = cache.readQuery({ query: GET_PERSONS })
@@ -15,7 +16,7 @@ const AddPerson = () => {
         query: GET_PERSONS,
         data: {
           ...data,
-          persons: [...data.persons, addPerson]
+          getPerson: [...data.getPerson, addPerson]
         },
       })
     }
@@ -25,8 +26,8 @@ const AddPerson = () => {
     forceUpdate({})
   }, [])
 
-  const findAvailableId = (persons) => {
-    const existingIds = persons.map(person => Number(person.id))
+  const findAvailableId = (getPerson) => {
+    const existingIds = getPerson.map(getPerson => Number(getPerson.id))
     for (let id = 1; id <= 100; id++) {
       if (!existingIds.includes(id)) {
         return id
@@ -37,7 +38,7 @@ const AddPerson = () => {
 
   const onFinish = values => {
     const { firstName, lastName } = values
-    const id = findAvailableId(personsData.persons)
+    const id = findAvailableId(personsData.getPerson)
 
     addPerson({
       variables: {
@@ -75,6 +76,7 @@ const AddPerson = () => {
           rules={[{ required: true, message: 'Please enter a last name' }]}>
           <Input placeholder='Last Name' />
         </Form.Item>
+        
         <Form.Item shouldUpdate={true}>
           {() => (
             <Button

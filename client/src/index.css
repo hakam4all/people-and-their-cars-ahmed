@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#add-car-form {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  min-width: 50% !important;
+
+}
+
+.person-card .ant-card-actions {
+  background-color: rgb(110, 110, 238) !important;
+}
+
+.car-card .ant-card-actions {
+  background-color: rgb(247, 240, 218) !important;
+}

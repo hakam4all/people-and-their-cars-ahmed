@@ -6,25 +6,24 @@ import { UPDATE_CAR } from '../../graphql/queries'
 
 const UpdateCar = props => {
   const { id, year, make, model, price } = props
-  const [form] = Form.useForm()
+  // const [form] = Form.useForm()
   const [, forceUpdate] = useState()
-
   const [UpdateCar] = useMutation(UPDATE_CAR)
 
-  const onFinish = values => {
-    const { year, make, model, price } = values
 
+  const onFinish = values => {
+    const {  year, make, model, price } = values
     UpdateCar({
       variables: {
         id,
-        year,
+        year: parseInt(year, 10),
         make,
-        model, 
-        price
+        model,
+        price: parseFloat(price),
       }
     })
     props.onButtonClick()
-  }
+  };
 
   useEffect(() => {
     forceUpdate()
@@ -39,13 +38,13 @@ const UpdateCar = props => {
         year,
         make,
         model,
-        price
+        price,
       }}
     >
       <Form.Item
         name='year'
         rules={[{ required: true, message: 'Please enter a year' }]}
-        
+
       >
         <Input placeholder='i.e. 2019' />
       </Form.Item>
@@ -58,24 +57,7 @@ const UpdateCar = props => {
       <Form.Item name='price' rules={[{ required: true, message: 'Please enter a price' }]}>
         <Input placeholder='i.e. 25,200' />
       </Form.Item>
-      <Form.Item shouldUpdate={true}>
-        {() => (
-          <Button
-            form={form}
-            type='primary'
-            htmlType='submit'
-            onClick={console.log('updateCar button is clicked2')}
-            
-
-          // disabled={
-          //   (!form.isFieldTouched('firstName') && !form.isFieldTouched('lastName')) ||
-          //   form.getFieldsError().filter(({ errors }) => errors.length).length
-          // }
-          >
-            Update car
-          </Button>
-        )}
-      </Form.Item>
+      <Button htmlType='submit'>Update car</Button>
       <Button onClick={props.onButtonClick}>Cancel</Button>
     </Form>
   )

@@ -27,6 +27,7 @@ const CarCard = props => {
         />
       ) : (
         <Card
+          className="car-card"
           style={styles.card}
           headStyle={{ backgroundColor: 'lightblue' }}
           title={`${year} ${make} ${model} -> $ ${price}`}
@@ -35,12 +36,13 @@ const CarCard = props => {
             <RemoveCar id={id} />
           ]}
         >
-
         </Card>
       )}
     </div>
   )
 }
+
+
 
 const getStyles = () => ({
   card: {
